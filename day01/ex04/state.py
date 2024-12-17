@@ -28,7 +28,9 @@ def stati():
         return
 if __name__ ==  '__main__' :
       stati()
-
+      
+    
+#3 var  
 
     
        
