@@ -1,15 +1,17 @@
-def openfile():
+def openfile(): #read file
     with open("text.txt" ,"r") as f:
         data =  f.read()
     return data
-def splitelement():
+ 
+def splitelement(): # split elements ","
     f =  openfile()
     elements = f.split(",")
     return elements
-def printelements():
+
+def printelements():  #print each elements inside the list
     elements = splitelement()
-    for numbers in  elements:
-        print(numbers.strip() )
+    for line in  elements: 
+        print(line)
     return
 
 
