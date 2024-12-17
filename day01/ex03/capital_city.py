@@ -18,7 +18,7 @@ def printarg():
         return
     else :
         state_name  = sys.argv[1]
-        state_abv =  states.get(state_name)
+        state_abv =  states.get(state_name) #works only to get the value   || key la unfortunatly 
         if(state_abv in capital_cities ):
             print(capital_cities.get(state_abv))
 
