@@ -12,7 +12,7 @@ capital_cities = {
 "CO": "Denver"
 }
 
-def stati():
+def search_by_value():
     if(len(sys.argv)!= 2):
         print("args errors")
         return
@@ -27,7 +27,7 @@ def stati():
                 print(returnVal)
         return
 if __name__ ==  '__main__' :
-      stati()
+      search_by_value()
       
     
 #3 var  

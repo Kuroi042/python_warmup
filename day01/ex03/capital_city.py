@@ -12,7 +12,7 @@ capital_cities = {
 "CO": "Denver"
 }
 
-def printarg():
+def search_by_key():
     if(len(sys.argv)!=2):
         print("args error\n")
         return
@@ -26,7 +26,7 @@ def printarg():
 
 
 if __name__ == '__main__':
-    printarg()
+    search_by_key()
 
 
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
