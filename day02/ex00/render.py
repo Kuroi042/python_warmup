@@ -9,22 +9,26 @@ import re
 def parseArg():
     if(len(sys.argv)!=2):
         print("args error")
-        exit
+        exit()
     
 def search():
     parseArg()
-    cv = open(sys.argv[1], "r")
+    
     with open("settings.py","r") as name:
     # print(name.read())
         for line in name:
             match = re.match(r'name\s*=\s*"(.*?)"', line)
             if(match):
-                name =match.group(1)
-    for line in cv:
-            match = re.sub()
-            
-            
-            
+                value =match.group(1)
+                # print(value)
+    if not value:
+            exit()
+    
+    with open(sys.argv[1], "r") as cv:
+        content  =  cv.read()
+        update = re.sub(r"\{name}",value,content)
+    with open("cv.html", "w") as new_file:
+            new_file.write(update)   
 search()
     
 
