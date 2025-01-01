@@ -5,6 +5,8 @@ from django.shortcuts import render
 def index(request):
         return HttpResponse('helloworold')
 
-
+def about(request):
+        return HttpResponse('abt page')
+        
 
 
