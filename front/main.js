@@ -36,8 +36,17 @@ signupForm.addEventListener('submit', (e) => {
   const username = document.getElementById('signup-username').value;
   const email = document.getElementById('signup-email').value;
   const password = document.getElementById('signup-password').value;
-
+  if(username==''||email==''||password=='')
+    return
  
+
+
+  // Check if user already exists
+//   if (users.find(user => user.email === email)) {
+//     alert('User already exists! Please login.');
+//     showContainer(loginContainer);
+//     return;
+//   }
 
   // Add user to the "database"
   users.push({ username, email, password });
@@ -54,7 +63,7 @@ loginForm.addEventListener('submit', (e) => {
   const email = document.getElementById('login-email').value;
   const password = document.getElementById('login-password').value;
 
- 
+  // Check if user exists
   const user = users.find(user => user.email === email && user.password === password);
   if (user) {
     alert(`Welcome back, ${user.username}!`);
