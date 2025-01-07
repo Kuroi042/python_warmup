@@ -7,7 +7,8 @@ class HotBeverage:
         self.price = self.price
         self.name = self.name
 
-    def description(self):
+    def description(
+            self):
         return self.description_text
 
     def __str__(self):
