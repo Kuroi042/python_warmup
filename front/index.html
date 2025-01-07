@@ -1,47 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Single Page Application</title>
+    <style>.container {
+    display: none;  
+}
+
+.container.active {
+    display: block;  
+}
+</style>
     <link rel="stylesheet" href="style.css">
     <script src="https://kit.fontawesome.com/23f54cf7c3.js" crossorigin="anonymous"></script>
 </head>
-
 <body>
-    <div class="container">
-        <div class="form-box">
-            <h1 id="title">Sign Up</h1>
-            <form>
-                <div class="input-group">
-                     <div class="input-field" id="nameField">
-                        <i class="fa-regular fa-user"></i>
-                        <input type="text" placeholder="Name">
+    <div class="app">
+        <div id="app">
+            <div class="form-box">
+                <!-- login  -->
+                <div id="login" class="container active">
+                    <h1>Login</h1>
+                    <form id="login-form">
+                        <div class="input-field">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" id="login-email"  placeholder="Email">
+                        </div>
+                        <div class="input-field">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="login-password" placeholder="Password">
+                        </div>
+                        <div class="btn-field">
+                            <button type="submit" id="login-btn">Log In</button>
+                        </div>
+                        <p>Lost password? <a href="https://www.youtube.com/watch?v=OhpxyN2dUps&ab_channel=laribenf">Click here!</a></p>
+                    </form>
+                    <div class="btn-field">
+                        <button type="button" id="go-to-signup">Don't have an account?</button>
                     </div>
-
-                     <div class="input-field">
-                        <i class="fa-regular fa-envelope"></i>
-                        <input type="email" placeholder="Email">
-                    </div>
-
-                     <div class="input-field">
-                        <i class="fa-solid fa-lock"></i>
-                        <input type="password" placeholder="Password">
-                    </div>
-
-                    <p>Lost password? <a href="https://www.youtube.com/watch?v=OhpxyN2dUps&ab_channel=laribenf">Click here!</a></p>
                 </div>
 
-                <div class="btn-field">
-                     <button type="button" id="signupbtn">Sign Up</button>
-                    <button type="button" id="signinbtn" class="disable">Sign In</button>
+                 <div id="signup" class="container">
+                    <h2>Register</h2>
+                    <form id="signup-form">
+                        <div class="input-field" id="nameField">
+                            <i class="fa-regular fa-user"></i>
+                            <input type="text"  id="signup-username" placeholder="Name">
+                        </div>
+                        <div class="input-field">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email"  id="signup-email" placeholder="Email">
+                        </div>
+                        <div class="input-field">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password"  id="signup-password" placeholder="Password">
+                        </div>
+                        <div class="btn-field">
+                            <button type="submit" id="register">Register</button>
+                        </div>
+                    </form>
+                    <div class="btn-field">
+                        <button type="button" id="go-to-login">Already have an account?</button>
+                    </div>
                 </div>
-            </form>
+
+                <!-- main  -->
+                <div id="main" class="container">
+                    <h2>Welcome</h2>
+                    <p>You are welcome</p>
+                    <button id="logout">Logout</button>
+                </div>
+            </div>
         </div>
     </div>
-
     <script src="main.js"></script>
 </body>
-
 </html>

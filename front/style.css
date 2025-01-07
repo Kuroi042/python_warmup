@@ -5,7 +5,7 @@
     box-sizing: border-box;
 }
 
-.container {
+.app {
     width: 100%;
     height: 100vh;
     background-image: linear-gradient(rgba(32, 13, 95, 0.8), rgba(168, 168, 190, 0.8)), url(miaw.jpg);
@@ -89,7 +89,8 @@ color: #3c00a0;
 .btn-field{
     width:100%;
     display: flex;
-    justify-content:  space-between;
+    justify-content: center;
+    
 }
 
 .btn-field button{
