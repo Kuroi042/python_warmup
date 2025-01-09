@@ -23,7 +23,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     background: #fff;
-    padding: 50px 60px 70px;
+    padding: 50px 60px 120px;
     text-align: center;
     border-radius: 10px;
 
@@ -99,9 +99,9 @@ color: #3c00a0;
     background: #3c00a0;
    color: #fff;
     height: 40px;    
-    border-radius: 20px;
-    border: 0;
-    outline: 0;
+    border-radius: 60px;
+    border: 1;
+    outline: 6;
     cursor: pointer;
     transition:  background 1s;
 }

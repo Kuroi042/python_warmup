@@ -7,11 +7,13 @@ const mainContainer = document.getElementById('main');
 const loginForm = document.getElementById('login-form');
 const signupForm = document.getElementById('signup-form');
 
+
 // Navigation buttons
 const goToSignupBtn = document.getElementById('go-to-signup');
 const goToLoginBtn = document.getElementById('go-to-login');
 const logoutBtn = document.getElementById('logout');
-
+const GoToIntra = document.getElementById('go-to-intra');
+const GoToGmail = document.getElementById('go-to-Gmail');
 // Temporary storage for users (simulating a database)
 let users = [];
 
@@ -19,16 +21,15 @@ let users = [];
 function showContainer(container) {
   document.querySelectorAll('.container').forEach(div => div.classList.remove('active'));
   container.classList.add('active');
-
+  
 }
 
 // Navigation handlers
 goToSignupBtn.addEventListener('click', () => showContainer(signupContainer),alert('signup '));
 goToLoginBtn.addEventListener('click', () => showContainer(loginContainer) ,alert(' login  !'));
-logoutBtn.addEventListener('click', () => {
-    showContainer(loginContainer);
-    alert('Logged out successfully!');
-});
+logoutBtn.addEventListener('click', () => {showContainer(loginContainer);alert('Logged out successfully!');});
+GoToIntra.addEventListener('click' ,()=>(alert('intra login!!'))); 
+GoToGmail.addEventListener('click' ,()=>{(alert('gmail login!!'))});
 
 // Handle Signup
 signupForm.addEventListener('submit', (e) => {
