@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify(data),  // Send data directly
                 });
                 if (response.status != 500) {
-                    response.json().then(res=>{
+                    response.json().then(res=>{ // salah
                         console.log(res)
                     })
                 }

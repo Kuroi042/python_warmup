@@ -15,9 +15,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
-
-from django.http import JsonResponse
-from django.http import JsonResponse
+from django.contrib.auth.models import User
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
 def your_view(request):
@@ -37,8 +35,16 @@ def button_action(request):
     
     if request.method == 'GET':  # Handle GET request
         print('Received data: !!!!!!!!!!!!!!!!!!!!!!!!!!')
-        return JsonResponse({"heloooo madafaaaa":  "Hello from Django!"})
-    
+        return JsonResponse({"heloooo":  "Hello from Django!"})
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json   
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
 @ensure_csrf_cookie    
 def register_action(request):
     if request.method == 'POST':
@@ -64,11 +70,15 @@ def register_action(request):
 
                 if password != password2:
                     return JsonResponse({'message': 'Passwords do not match.', 'status': 'fail'}, status=400)
-                if email == "1@gmail.com" and password == "123" and username == "jesus":
-                    return JsonResponse({'message': 'Login successful', 'status': 'success'})
-                else:
-                    return JsonResponse({'message': 'Invalid credentials.', 'status': 'fail'}, status=401)
-        
+                if User.objects.filter(username=username).exists(): #username already exists check
+                    return JsonResponse({'message': 'Username is already taken.', 'status': 'fail'}, status=400)
+                if User.objects.filter(email=email).exists():#email already exists
+                    return JsonResponse({'message': 'Email is already registered.', 'status': 'fail'}, status=400)
+
+                user = User.objects.create_user(username=username, email=email, password=password)
+                user.save()
+                return JsonResponse({'message': 'User registered successfully!', 'status': 'success'}, status=201)
+
         except json.JSONDecodeError:
                 return JsonResponse({'message': 'Invalid JSON format.', 'status': 'fail'}, status=400)
     
