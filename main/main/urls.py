@@ -44,6 +44,9 @@ urlpatterns = [
         open(settings.BASE_DIR.parent / 'front/index.html').read(), 
         content_type='text/html'
     )),
+        path('get-csrf-token/', views.get_csrf_token, name='get-csrf-token'),
     path('button-action/', views.button_action, name='button-action'),
+   path('register-action/', views.register_action, name='register-action')
+   
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

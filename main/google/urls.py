@@ -22,5 +22,8 @@ from django.shortcuts import render
 urlpatterns = [
 path('', lambda request: HttpResponse(open(settings.BASE_DIR.parent / '/front/index.html').read(), content_type='text/html')),
     path('button-action/', button_action, name='button-action'),
+    path('register-action/', register_action, name='register-action'),
+        path('your-view/', your_view, name='your_view'),
+path('get-csrf-token/',  get_csrf_token, name='get-csrf-token'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
