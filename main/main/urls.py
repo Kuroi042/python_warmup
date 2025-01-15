@@ -27,10 +27,23 @@ from django.urls import path
 from django.http import HttpResponse
 from django.shortcuts import render
 
-urlpatterns = [
- 
-    path('', lambda request: HttpResponse(open(settings.BASE_DIR.parent / 'front/index.html').read(), content_type='text/html')),
- 
-]
+from django.conf import settings
+import os
 
+try:
+    with open(settings.BASE_DIR.parent / 'front/index.html') as f:
+        print("File opened successfully!")
+except FileNotFoundError:
+    print("File not found at:", settings.BASE_DIR / 'front/index.html')
+
+print(settings.BASE_DIR / 'front/index.html')
+# 
+urlpatterns = [
+    path('admin/', admin.site.urls),  # Add this line for admin access
+    path('', lambda request: HttpResponse(
+        open(settings.BASE_DIR.parent / 'front/index.html').read(), 
+        content_type='text/html'
+    )),
+    path('button-action/', views.button_action, name='button-action'),
+]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

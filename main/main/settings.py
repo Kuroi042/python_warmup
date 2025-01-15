@@ -28,6 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,29 +38,35 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'corsheaders',
+    'google',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    # 'allauth',
-    # 'allauth.account',
-    # 'allauth.socialaccount',
-    # 'allauth.socialaccount.providers.google',
 ]
-
+SITE_ID = 1 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Move this to the top
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',  # Required for admin
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',  # Required for admin
-    'django.contrib.messages.middleware.MessageMiddleware',  # Required for admin
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'allauth.account.middleware.AccountMiddleware',  # Uncomment if using allauth
 ]
-# AUTHENTICATION_BACKENDS = [
-#     'django.contrib.auth.backends.ModelBackend',  # Default
-#     'allauth.account.auth_backends.AuthenticationBackend',  # Allauth
-# ]
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
 ROOT_URLCONF = 'main.urls'
 
 TEMPLATES = [
@@ -77,7 +84,7 @@ TEMPLATES = [
         },
     },
 ]
-STATIC_ROOT = BASE_DIR / "static_root"
+# STATIC_ROOT = BASE_DIR / "static_root"
 
 
 STATICFILES_DIRS = [
