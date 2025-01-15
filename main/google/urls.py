@@ -24,6 +24,7 @@ path('', lambda request: HttpResponse(open(settings.BASE_DIR.parent / '/front/in
     path('button-action/', button_action, name='button-action'),
     path('register-action/', register_action, name='register-action'),
         path('your-view/', your_view, name='your_view'),
-path('get-csrf-token/',  get_csrf_token, name='get-csrf-token'),
+# path('get-csrf-token/',  get_csrf_token, name='get-csrf-token'),
+path('login-action/',login_action, name='login-action'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

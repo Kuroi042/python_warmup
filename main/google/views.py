@@ -26,10 +26,10 @@ def your_view(request):
 
 from django.middleware.csrf import get_token
 
-@ensure_csrf_cookie
-def get_csrf_token(request):
-    csrf_token = get_token(request)
-    return JsonResponse({'csrfToken': csrf_token})
+# # @ensure_csrf_cookie
+# # def get_csrf_token(request):
+#     csrf_token = get_token(request)
+#     return JsonResponse({'csrfToken': csrf_token})
 
 def button_action(request):
     
@@ -45,12 +45,12 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-@ensure_csrf_cookie    
+# @ensure_csrf_cookie    
 def register_action(request):
     if request.method == 'POST':
-        csrf_token = request.headers.get('X-CSRFToken')
-        if not csrf_token:
-            return JsonResponse({'message': 'CSRF token missing.', 'status': 'fail'}, status=403)# Django's CSRF validation automatically happens with CSRF middleware enabled
+        # csrf_token = request.headers.get('X-CSRFToken')
+        # if not csrf_token:
+        #     return JsonResponse({'message': 'CSRF token missing.', 'status': 'fail'}, status=403)# Django's CSRF validation automatically happens with CSRF middleware enabled
         data = json.loads(request.body)  # Parse JSON body
  
   
@@ -82,4 +82,33 @@ def register_action(request):
         except json.JSONDecodeError:
                 return JsonResponse({'message': 'Invalid JSON format.', 'status': 'fail'}, status=400)
     
+    return JsonResponse({'message': 'Only POST method is allowed.', 'status': 'fail'}, status=405)
+
+from django.contrib.auth import authenticate
+from django.http import JsonResponse
+import json
+
+def login_action(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)  # Parse the JSON body
+            email = data.get('email')
+            password = data.get('password')
+
+            # Check if email and password are provided
+            if not email or not password:
+                return JsonResponse({'message': 'Missing required fields.', 'status': 'fail'}, status=400)
+
+            # Attempt authentication with email instead of username
+            user = authenticate(request, username=email, password=password)  # Use email as username
+
+            if user is not None:
+                return JsonResponse({'message': 'Login successful!', 'status': 'success'}, status=200)
+            else:
+                # Incorrect credentials
+                return JsonResponse({'message': 'Invalid email or password.', 'status': 'fail'}, status=400)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'message': 'Invalid JSON format.', 'status': 'fail'}, status=400)
+
     return JsonResponse({'message': 'Only POST method is allowed.', 'status': 'fail'}, status=405)

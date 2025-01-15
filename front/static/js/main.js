@@ -2,16 +2,16 @@
 
 
 
-function getCSRFToken() {
-    const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-        const [name, value] = cookie.trim().split('=');
-        if (name === 'csrftoken') {
-            return value;
-        }
-    }
-    return null;
-}
+// function getCSRFToken() {
+//     const cookies = document.cookie.split(';');
+//     for (let cookie of cookies) {
+//         const [name, value] = cookie.trim().split('=');
+//         if (name === 'csrftoken') {
+//             return value;
+//         }
+//     }
+//     return null;
+// }
 
 renderLoginView();
 renderSignupView();
@@ -33,16 +33,7 @@ function renderView(viewFunction) {
 document.addEventListener('DOMContentLoaded', () => {
     renderView(renderLoginView);
     document.addEventListener('click', async (event) => {
-        try {
-            const response = await fetch('http://localhost:8000/get-csrf-token/', {
-                credentials: 'include'  // Important! This enables cookies
-            });
-            if (!response.ok) {
-                console.error('Failed to get CSRF token');
-            }
-        } catch (error) {
-            console.error('Error fetching CSRF token:', error);
-        }
+
 
         const target = event.target;
         if (target.id === 'go-to-signup') {
@@ -51,12 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         else if (target.id === 'register'){
             console.log("'register button clicked!'");
-            const csrfToken = getCSRFToken();
-            if (csrfToken) {
-                document.getElementById('csrf-token').value = csrfToken; // Set token to hidden input
-            }  
-            else
-                console.log('scsrffffffv not found');
             const data = {
                 username: document.getElementById('signup-username').value,  
                 email: document.getElementById('signup-email').value,
@@ -70,21 +55,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': csrfToken,  // Make sure the CSRF token is included
                     },
                     credentials: 'include',
                     body: JSON.stringify(data),  // Send data directly
                 });
-                if (response.status != 500) {
-                    response.json().then(res=>{ // salah
-                        console.log(res)
-                    })
-                }
+
                 if (response.ok) {
                     const responseData = await response.json();
                     console.log('Server response', responseData.message);
+                    alert('Account created successfully! Redirecting to login page...');
+                    renderView(renderLoginView);
                 } else {
-                    console.log('Fetch error:', response.statusText);
+                            const errorData = await response.json();
+                            console.log('Fetch error:', errorData);
+                            alert('Error: ' + errorData.message);
                 }
             } catch (error) {
                 console.log('Error:', error);
@@ -92,9 +76,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         else if (target.id === 'login-btn') {
+
+            const data = {
+                 email: document.getElementById('login-email').value,
+                password: document.getElementById('login-password').value,
+ 
+            };
+            try {
+                const response = await fetch('http://localhost:8000/login-action/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                     body: JSON.stringify(data),  // Send data directly
+                });
+ 
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log('Server response', responseData.message);
+                    alert('Account logged successfully! Redirecting to login page...');
+                    renderView(renderMainView);
+                } else {
+                            const errorData = await response.json();
+                            console.log('Fetch error:', errorData);
+                            alert('Error: ' + errorData.message);
+                }
+            } catch (error) {
+                console.log('Error:', error);
+            }
+
             console.log("'Login button clicked!'");
-
-
 
         } else if (target.id === 'go-to-login') {
             renderView(renderLoginView);
@@ -102,20 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
             renderView(renderLoginView);
         } else if (target.id === 'intra-btn') {
             const email = document.getElementById('login-email').value;
-            console.log('Email entered:', email);
-            const response = await fetch('http://localhost:8000/button-action/', {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (response.ok) {
-                const data = await response.json();
-                console.log(data.message);
-            } else {
-                console.log('Fetch error:', response.status);
-            }
             alert('Intra login');
         } else if (target.id === 'gmail-btn') {
             alert('Gmail login');
