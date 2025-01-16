@@ -18,11 +18,7 @@ from django.conf.urls.static import static
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
-def your_view(request):
-    csrf_token = get_token(request)  # This will generate the CSRF token for you
-    response = JsonResponse({'message': 'Success'})
-    response['X-CSRFToken'] = csrf_token  # Pass the CSRF token in the response header
-    return response
+
 
 from django.middleware.csrf import get_token
 
@@ -45,13 +41,11 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-# @ensure_csrf_cookie    
+   
 def register_action(request):
     if request.method == 'POST':
-        # csrf_token = request.headers.get('X-CSRFToken')
-        # if not csrf_token:
-        #     return JsonResponse({'message': 'CSRF token missing.', 'status': 'fail'}, status=403)# Django's CSRF validation automatically happens with CSRF middleware enabled
-        data = json.loads(request.body)  # Parse JSON body
+     
+        data = json.loads(request.body)  
  
   
         try:
@@ -88,27 +82,31 @@ from django.contrib.auth import authenticate
 from django.http import JsonResponse
 import json
 
+import json
+from django.http import JsonResponse
+from django.contrib.auth import authenticate
+
 def login_action(request):
     if request.method == 'POST':
         try:
-            data = json.loads(request.body)  # Parse the JSON body
+            data = json.loads(request.body)
+
             email = data.get('email')
             password = data.get('password')
 
-            # Check if email and password are provided
             if not email or not password:
                 return JsonResponse({'message': 'Missing required fields.', 'status': 'fail'}, status=400)
 
-            # Attempt authentication with email instead of username
-            user = authenticate(request, username=email, password=password)  # Use email as username
-
-            if user is not None:
+            user = authenticate(request, username=email, password=password)
+            if user:
                 return JsonResponse({'message': 'Login successful!', 'status': 'success'}, status=200)
             else:
-                # Incorrect credentials
-                return JsonResponse({'message': 'Invalid email or password.', 'status': 'fail'}, status=400)
+                return JsonResponse({'message': 'Invalid email or password.', 'status': 'fail'}, status=401)
 
         except json.JSONDecodeError:
-            return JsonResponse({'message': 'Invalid JSON format.', 'status': 'fail'}, status=400)
+             return JsonResponse({'message': 'Invalid JSON format.', 'status': 'fail'}, status=400)
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            return JsonResponse({'message': 'Server error.', 'status': 'fail'}, status=500)
 
     return JsonResponse({'message': 'Only POST method is allowed.', 'status': 'fail'}, status=405)

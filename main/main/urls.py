@@ -49,5 +49,6 @@ urlpatterns = [
    path('register-action/', views.register_action, name='register-action'),
    path('login-action/',views.login_action, name='login-action'),
    
+   
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
