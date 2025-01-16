@@ -33,8 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'rest_framework',
-    # 'api',
-    'django.contrib.admin',
+        'django.contrib.admin',  # Add this back
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -44,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 ]
+
 SITE_ID = 1 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # Move this to the top
@@ -51,10 +51,11 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',  # CSRF check should come after session middleware
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',  # Keep only one instance
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+LOGIN_URL = '/login-action/'
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
@@ -72,8 +73,10 @@ ROOT_URLCONF = 'main.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': False,
+        'DIRS': [  # You can add custom directories here for other views if needed
+            BASE_DIR / 'templates',
+        ],
+        'APP_DIRS': True,  # This is important for loading admin templates from the app
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -84,6 +87,8 @@ TEMPLATES = [
         },
     },
 ]
+STATIC_URL = '/static/'
+
 # STATIC_ROOT = BASE_DIR / "static_root"
 
 

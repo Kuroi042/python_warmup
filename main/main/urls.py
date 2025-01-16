@@ -39,16 +39,16 @@ except FileNotFoundError:
 print(settings.BASE_DIR / 'front/index.html')
 # 
 urlpatterns = [
-    path('admin/', admin.site.urls),  # Add this line for admin access
     path('', lambda request: HttpResponse(
         open(settings.BASE_DIR.parent / 'front/index.html').read(), 
         content_type='text/html'
     )),
-        # path('get-csrf-token/', views.get_csrf_token, name='get-csrf-token'),
-    path('button-action/', views.button_action, name='button-action'),
+        path('admin/', admin.site.urls),  # Add this line for admin access
+
+     path('button-action/', views.button_action, name='button-action'),
    path('register-action/', views.register_action, name='register-action'),
    path('login-action/',views.login_action, name='login-action'),
-   
+ 
    
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
