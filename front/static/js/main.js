@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderView(renderMainView);
                     const userInfoElement =document.getElementById('user-info');
                     if (userInfoElement) {
-                        console.log('hahahahahahhaah');
                         userInfoElement.innerHTML = `Welcome  , ${responseData.user.username}`;
                     }
                 } else {
