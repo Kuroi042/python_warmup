@@ -12,7 +12,7 @@
 //     }
 //     return null;
 // }
-
+renderMainView();
 renderLoginView();
 renderSignupView();
 
@@ -95,7 +95,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     const responseData = await response.json();
                     console.log('Server response', responseData.message);
                     alert('Account logged successfully! Redirecting to login page...');
+                    alert(`Welcome ${responseData.user.username}!`);
                     renderView(renderMainView);
+                    const userInfoElement =document.getElementById('user-info');
+                    if (userInfoElement) {
+                        console.log('hahahahahahhaah');
+                        userInfoElement.innerHTML = `Welcome  , ${responseData.user.username}`;
+                    }
                 } else {
                             const errorData = await response.json();
                             console.log('Fetch error:', errorData);

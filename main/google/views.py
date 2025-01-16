@@ -99,7 +99,8 @@ def login_action(request):
 
             user = authenticate(request, username=email, password=password)
             if user:
-                return JsonResponse({'message': 'Login successful!', 'status': 'success'}, status=200)
+                return JsonResponse({'message': 'Login successful!', 'status': 'success', 'user':{
+                    'username': user.username }}, status=200)
             else:
                 return JsonResponse({'message': 'Invalid email or password.', 'status': 'fail'}, status=401)
 
