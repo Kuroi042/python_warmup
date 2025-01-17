@@ -4,7 +4,7 @@
  
 function initializeGoogle() {
     window.google.accounts.id.initialize({
-        client_id: '598064932608-4j38572h65hmj37524inmc1nhcfqiqpm.apps.googleusercontent.com',  // Replace with your actual client ID
+        client_id: 'ccc',  // Replace with your actual client ID
         callback: handleGoogleLogin
     });
 
