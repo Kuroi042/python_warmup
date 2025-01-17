@@ -26,5 +26,7 @@ path('', lambda request: HttpResponse(open(settings.BASE_DIR.parent / '/front/in
     path('register-action/', register_action, name='register-action'),
     path('login-action/',login_action, name='login-action'),
      path('accounts/google/login/callback/',google_login, name='khit'),
+     path('admin/', admin.site.urls),
+
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

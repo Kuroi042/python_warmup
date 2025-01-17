@@ -5,7 +5,7 @@ from django.contrib.auth import views as auth_views
 
 from django.contrib import admin
  
-from mygoogle import views  # Import the views from the google app
+from mygoogle import views  
 
  
 from django.conf.urls.static import static
@@ -39,5 +39,6 @@ urlpatterns = [
      path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('accounts/google/login/callback/', views.google_login, name='google_login'),
+
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
