@@ -4,7 +4,7 @@ function renderLoginView() {
       <form id="login-form">
         <div class="input-field">
           <i class="fa-regular fa-envelope"></i>
-          <input type="email" id="login-email" placeholder="Email" />
+          <input type="email" id="login-email" placeholder="Email" required />
         </div>
         <div class="input-field">
           <i class="fa-solid fa-lock"></i>

@@ -32,19 +32,41 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'mygoogle',
     'rest_framework',
-        'django.contrib.admin',  # Add this back
+    'dj_rest_auth',
+    'django.contrib.admin',  # Add this back
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'corsheaders',
-    'google',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-]
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 
-SITE_ID = 1 
+]
+SITE_ID = 1
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': '598064932608-4j38572h65hmj37524inmc1nhcfqiqpm.apps.googleusercontent.com',
+            'secret': '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',
+            'key': ''
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # Move this to the top
     'django.middleware.security.SecurityMiddleware',
@@ -54,10 +76,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',  # Keep only one instance
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+        'allauth.account.middleware.AccountMiddleware',  # Add this line
+
 ]
 LOGIN_URL = '/login-action/'
 CORS_ALLOW_ALL_ORIGINS = True
-
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = [
     'DELETE',
@@ -67,6 +93,15 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',  # Add JWT Authentication
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',  # Optional: Requires the user to be authenticated
+    ],
+}
 
 ROOT_URLCONF = 'main.urls'
 
@@ -156,3 +191,15 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+LOGIN_REDIRECT_URL = '/'
+
+LOGOUT_REDIRECT_URL ="/"
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '598064932608-4j38572h65hmj37524inmc1nhcfqiqpm.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'

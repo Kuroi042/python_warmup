@@ -22,8 +22,9 @@ from django.shortcuts import render
 urlpatterns = [
 path('', lambda request: HttpResponse(open(settings.BASE_DIR.parent / '/front/index.html').read(), content_type='text/html')),
     path('button-action/', button_action, name='button-action'),
+    path('auth/', include('allauth.urls')), 
     path('register-action/', register_action, name='register-action'),
     path('login-action/',login_action, name='login-action'),
- 
+     path('accounts/google/login/callback/',google_login, name='khit'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
