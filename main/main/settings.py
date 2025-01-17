@@ -53,8 +53,8 @@ SITE_ID = 1
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': '598064932608-4j38572h65hmj37524inmc1nhcfqiqpm.apps.googleusercontent.com',
-            'secret': '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',
+            # 'client_id': 
+            # 'secret':  
             'key': ''
         },
         'SCOPE': [
