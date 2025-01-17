@@ -69,20 +69,20 @@ def login_action(request):
         try:
             data = json.loads(request.body)
 
-            email = data.get('email')
+            userName = data.get('user')
             password = data.get('password')
-
-            if not email or not password:
+            print(userName , password)
+            if not userName or not password:
                 return JsonResponse({'message': 'Missing required fields.', 'status': 'fail'}, status=400)
 
-            user = authenticate(request, username=email, password=password)
+            user = authenticate(request, username=userName, password=password)
             if user:
                 is_admin = user.is_staff or user.is_superuser
                 response_data = {
                     'message': 'Login successful!',
                     'status': 'success',
                     'user': {
-                        'username': user.username,
+                        'username': userName,
                         'is_admin': is_admin  # Add admin status to the response
                     }
                 }
@@ -98,7 +98,7 @@ def login_action(request):
                     'status': 'success',
                     'user': {
                         'username': user.username,
-                        'email': user.email
+                    
                     }
                     }, status=200)
             else:
