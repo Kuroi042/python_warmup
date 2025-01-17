@@ -1,10 +1,35 @@
 
+// function loadGoogleAPI(callback) {
+//     if (typeof window.google !== 'undefined' && window.google.accounts) {
+//         callback();  // Google API already loaded, execute the callback
+//         return;
+//     }
+
+//     // Create a script tag to load the Google API
+//     const script = document.createElement('script');
+//     script.src = "https://accounts.google.com/gsi/client";
+//     script.async = true;
+//     script.defer = true;
+//     script.onload = callback;  // Execute callback once the script is loaded
+//     script.onerror = () => {
+//         console.error("Google API script failed to load.");
+//     };
+
+//     // Append the script tag to the head of the document
+//     document.head.appendChild(script);
+// }
 
 
  
 function initializeGoogle() {
+    if (!window.google || !window.google.accounts) {
+        console.error("Google API not loaded.");
+        return;
+    }
+
+
     window.google.accounts.id.initialize({
-        client_id: 'ccc',  // Replace with your actual client ID
+        client_id: '598064932608-4j38572h65hmj37524inmc1nhcfqiqpm.apps.googleusercontent.com',  // Replace with your actual client ID
         callback: handleGoogleLogin
     });
 
@@ -15,6 +40,14 @@ function initializeGoogle() {
 
     window.google.accounts.id.prompt();  // Optional, can show the one-tap prompt
 }
+
+
+// function loadAndInitializeGoogle() {
+//     loadGoogleAPI(initializeGoogle);  // Load and initialize Google API
+// }
+
+
+
 function handleGoogleLogin(response) {
     const id_token = response.credential;
 
@@ -35,15 +68,26 @@ function handleGoogleLogin(response) {
     .then(response => response.json())
     .then(data => {
         if (data.message === "Login successful!") {
-                        const userName = data.user?.name || "User";
-            alert(`Welcome, ${userName}! Successfully logged in with Google!`);
+            const user = data.user;
+            // const userName = data.user?.name || "User";
+            const userName = user.name;
+            const userEmail = user.email;
+            const userPicture = user.picture;
+ 
 
+            
             renderView(renderMainView);
-            const userInfoElement = document.getElementById('user-info');
-            if (userInfoElement) {
-                userInfoElement.innerHTML = `Welcome Merhba , ${userName}`;
-            }
-            alert('Successfully logged in with Google!' );
+            alert(`Welcome, ${userName}! Successfully logged in with Google!`);
+            const profilePicElement = document.getElementById('profile-pic');
+            if (profilePicElement && userPicture  ) {
+                profilePicElement.src = userPicture;
+             }
+             const userInfoElement = document.getElementById('user-info');
+             userInfoElement.innerHTML = `Welcome Merhba , ${userName}`;
+            // if (userInfoElement) {
+            //     userInfoElement.innerHTML = `Welcome Merhba , ${userName}`;
+            // }
+            // alert('Successfully logged in with Google!' );
 
              
         } else {

@@ -112,36 +112,49 @@ def google_login(request):
                 id_info = id_token.verify_oauth2_token(
                     token, 
                     google.auth.transport.requests.Request(),
-                    'sirri lilghaya'
+                    '598064932608-4j38572h65hmj37524inmc1nhcfqiqpm.apps.googleusercontent.com'
                 )
-            except ValueError:
-                return JsonResponse({'message': 'Invalid token'}, status=400)
+            except ValueError as e:
+                return JsonResponse({'message': f'Invalid token: {str(e)}'}, status=400)
+
 
             # ID token is valid, proceed with user authentication
             user, created = User.objects.get_or_create(
                 email=id_info['email'], 
-                defaults={'username': id_info['email']}
+                defaults={'username': id_info['email']},
+                
             )
 
             if created:
                 # Perform any additional actions for new users, if needed
                 pass
-
+            picture_url = id_info.get('picture')
+            if not picture_url:
+                print("Profile picture not available.")
+                # picture_url = "https://example.com/default-profile-picture.png"  # Use a default image
+            else:
+                print(f"Retrieved profile picture: {picture_url}")
             # Manually specify the backend for the user
             user.backend = settings.AUTHENTICATION_BACKENDS[0]
             login(request, user)  # Log the user in
             user_name = user.username
             user_email = user.email
+            user_picture = id_info.get('picture', 'not found !!')
             print(f"User Name: {user_name}, User Email: {user_email}")
 
             return JsonResponse({
                 'message': 'Login successful!',
                 'user': {
                     'name': user_name,
-                    'email': user_email
+                    'email': user_email,
+                    'picture': picture_url
                 }
             })
-
+            print("Backend JSON response:", response_data)
+            
         except json.JSONDecodeError:
             return JsonResponse({'message': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'message': f'An unexpected error occurred: {str(e)}'}, status=500)
+    
     return JsonResponse({'message': 'Invalid request method'}, status=405)

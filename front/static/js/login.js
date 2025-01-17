@@ -1,3 +1,34 @@
+function loadGoogleAPI(callback) {
+  if (typeof window.google !== 'undefined' && window.google.accounts) {
+      // Google API already loaded, execute the callback immediately
+      callback();
+      return;
+  }
+
+  // Create a script tag to load the Google API
+  const script = document.createElement('script');
+  script.src = "https://accounts.google.com/gsi/client";
+  script.async = true;
+  script.defer = true;
+  script.onload = callback;  // Execute callback once the script is loaded
+  script.onerror = () => {
+      console.error("Google API script failed to load.");
+  };
+
+  // Append the script tag to the head of the document
+  document.head.appendChild(script);
+}
+
+
+// Call this function after rendering the login view
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('google-signin-container')) {
+    initializeGoogleSignin();
+  }
+});
+
+ 
+
 function renderLoginView() {
     return `
       <h1>Login</h1>
