@@ -10,7 +10,7 @@ from django.contrib.auth import views as auth_views
 
 from django.contrib import admin
 from django.urls import path, include
-from google import views  # Import the views from the google app
+from mygoogle import views  # Import the views from the google app
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -27,6 +27,7 @@ path('', lambda request: HttpResponse(open(settings.BASE_DIR.parent / '/front/in
     path('login-action/',login_action, name='login-action'),
      path('accounts/google/login/callback/',google_login, name='khit'),
      path('admin/', admin.site.urls),
-
+ path('protected-api/', protected_api_view, name='protected-api'),
+ path('simple-view/', simple_view,name='simpleview'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

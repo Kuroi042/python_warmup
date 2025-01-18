@@ -1,26 +1,4 @@
 
-// function loadGoogleAPI(callback) {
-//     if (typeof window.google !== 'undefined' && window.google.accounts) {
-//         callback();  // Google API already loaded, execute the callback
-//         return;
-//     }
-
-//     // Create a script tag to load the Google API
-//     const script = document.createElement('script');
-//     script.src = "https://accounts.google.com/gsi/client";
-//     script.async = true;
-//     script.defer = true;
-//     script.onload = callback;  // Execute callback once the script is loaded
-//     script.onerror = () => {
-//         console.error("Google API script failed to load.");
-//     };
-
-//     // Append the script tag to the head of the document
-//     document.head.appendChild(script);
-// }
-
-
- 
 function initializeGoogle() {
     if (!window.google || !window.google.accounts) {
         console.error("Google API not loaded.");
@@ -34,17 +12,28 @@ function initializeGoogle() {
     });
 
     window.google.accounts.id.renderButton(
-        document.getElementById('gmail-btn'), // The element where you want to render the button
-         { theme: "outline", size: "small" }            // Customize button appearance
+        document.getElementById('gmail-btn'),  
+         { theme: "outline", size: "Big" }            // Customize button appearance
     );
 
-    window.google.accounts.id.prompt();  // Optional, can show the one-tap prompt
+    window.google.accounts.id.prompt();   
 }
 
+ 
+function fetchSomeProtectedAPI(jwtToken) {
+    console.log('token nnnn', jwtToken);  // Logs the token to the console for debugging
+    const jwt = localStorage.getItem('jwtToken');
 
-// function loadAndInitializeGoogle() {
-//     loadGoogleAPI(initializeGoogle);  // Load and initialize Google API
-// }
+    fetch('http://localhost:8000/protected-api/', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${jwt}`  // Sends the token in the Authorization header
+        }
+    })
+    .then(response => response.json())  // Parse the JSON response from the backend
+    .then(data => console.log('Response from API:', data))  // Log the data from the API
+    .catch(error => console.error("Error fetching protected API:", error));  // Handle errors
+}
 
 
 
@@ -56,8 +45,7 @@ function handleGoogleLogin(response) {
         return;
     }
 
-    // Send the token to your backend for verification and user login
-    fetch('http://localhost:8000/accounts/google/login/callback/', {
+     fetch('http://localhost:8000/accounts/google/login/callback/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -67,29 +55,29 @@ function handleGoogleLogin(response) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.message === "Login successful!") {
-            const user = data.user;
-            // const userName = data.user?.name || "User";
-            const userName = user.name;
+        if (data.message === "Loginn successful!") {
+            console.log('fata',data); //data container the returned Json
+            const user = data.user ;
+            const jwtToken =  data.token;
+            // console.log('hahowa token ' , jwtToken); // for token jwt
+             const userName = user.name;
             const userEmail = user.email;
             const userPicture = user.picture;
- 
-
+            localStorage.setItem('jwtToken', jwtToken);   
+            console.log('HEHEHEEH' ,user  );
+            console.log('jwt token hhh', jwtToken);
+            
             
             renderView(renderMainView);
             alert(`Welcome, ${userName}! Successfully logged in with Google!`);
             const profilePicElement = document.getElementById('profile-pic');
             if (profilePicElement && userPicture  ) {
                 profilePicElement.src = userPicture;
-             }
-             const userInfoElement = document.getElementById('user-info');
-             userInfoElement.innerHTML = `Welcome Merhba , ${userName}`;
-            // if (userInfoElement) {
-            //     userInfoElement.innerHTML = `Welcome Merhba , ${userName}`;
-            // }
-            // alert('Successfully logged in with Google!' );
-
-             
+            }
+            const userInfoElement = document.getElementById('user-info');
+            fetchSomeProtectedAPI(jwtToken);  
+            userInfoElement.innerHTML = `Welcome Merhba , ${userName}`;
+            
         } else {
             console.error("Login failed:", data);
             alert('Login failed. Please try again.');
@@ -101,7 +89,7 @@ function handleGoogleLogin(response) {
     });
 }
 document.addEventListener('DOMContentLoaded', () => {
-    initializeGoogle();  // Initialize Google login
+    initializeGoogle();  
 });
 
 renderMainView();
@@ -170,30 +158,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         else if (target.id === 'login-btn') {
-
             const data = {
-                email: document.getElementById('login-email').value,
+                user: document.getElementById('login-user').value,
                 password: document.getElementById('login-password').value,
-
             };
+        
             try {
                 const response = await fetch('http://localhost:8000/login-action/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(data),  // Send data directly
+                    body: JSON.stringify(data), // Send data directly
                 });
-
+        
                 if (response.ok) {
                     const responseData = await response.json();
-                    console.log('Server response', responseData.message);
-                    alert('Account logged successfully! Redirecting to login page...');
-                    alert(`Welcome ${responseData.user.username}!`);
-                    renderView(renderMainView);
-                    const userInfoElement = document.getElementById('user-info');
-                    if (userInfoElement) {
-                        userInfoElement.innerHTML = `Welcome  , ${responseData.user.username}`;
+                    
+                    console.log('Server response:', responseData.message);
+                    alert('Account logged in successfully!');
+                    
+                    // Handle superuser redirect
+                    if (responseData.redirect_url) {
+                        alert('Redirecting to admin panel...');
+                        window.location.href = responseData.redirect_url; // Redirect superuser to admin panel
+                    } else {
+                        // For regular users
+                        alert(`Welcome, ${responseData.user.username}!`);
+                        renderView(renderMainView);
+        
+                        const userInfoElement = document.getElementById('user-info');
+                        if (userInfoElement) {
+                            userInfoElement.innerHTML = `Welcome, ${responseData.user.username}`;
+                        }
                     }
                 } else {
                     const errorData = await response.json();
@@ -203,8 +200,9 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 console.log('Error:', error);
             }
-
+        
             console.log("'Login button clicked!'");
+      
 
         } else if (target.id === 'go-to-login') {
             renderView(renderLoginView);
@@ -216,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (target.id === 'gmail-btn') {
 
                 initializeGoogle()
-                handleGoogleLogin();
+                // handleGoogleLogin(); no need
  
 
 

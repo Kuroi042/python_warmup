@@ -8,7 +8,7 @@ function renderSignupView() {
     </div>
     <div class="input-field">
       <i class="fa-regular fa-envelope"></i>
-      <input type="email" id="signup-email" placeholder="Email" required/>
+      <input type="email" id="signup-email" placeholder="Email" />
     </div>
     <div class="input-field">
       <i class="fa-solid fa-lock"></i>

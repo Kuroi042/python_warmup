@@ -111,83 +111,206 @@ def login_action(request):
             return JsonResponse({'message': 'Server error.', 'status': 'fail'}, status=500)
 
     return JsonResponse({'message': 'Only POST method is allowed.', 'status': 'fail'}, status=405)
-
-
-from rest_framework_simplejwt.tokens import RefreshToken
-def jwt_login(request):
-    if request.method == 'POST':
-        refresh = RefreshToken.for_user(user)
-        return JsonResponse({'access_token': str(refresh.access_token)})
-    
-
-
-import google.auth.transport.requests
-from google.oauth2 import id_token
-from django.shortcuts import redirect
-from django.contrib.auth import login
+import json
+import jwt
+from datetime import datetime, timedelta
+from django.http import JsonResponse
 from django.contrib.auth.models import User
+from django.contrib.auth import login
+from google.oauth2 import id_token
+import google.auth.transport.requests
+from django.conf import settings
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+import jwt
+from django.conf import settings
+from django.http import JsonResponse
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from datetime import datetime
+
+from django.http import JsonResponse
+import jwt
+from django.conf import settings
+from rest_framework.decorators import api_view
+
+ 
+
+
+# class IsAuthenticated(APIView):
+#     def has_permission(self, request, view):
+#         print("Checking authentication...")  # Add this print statement
+#         return super().has_permission(request, view)
+# @api_view(['GET'])
+# def protected_api_view(request):
+#     print('Request received for protected API!') 
+#     token = None
+#     auth_header = request.headers.get('Authorization', None)
+    
+#     # Extract the token from the Authorization header
+#     if auth_header:
+#         parts = auth_header.split()
+#         if len(parts) == 2 and parts[0].lower() == 'bearer':
+#             token = parts[1]
+    
+#     if not token:
+#         print('jajajajajajaj')
+#         return JsonResponse({"message": "Token not provided"}, status=400)
+    
+#     try:
+#         print('Decoding token:', token)  # Log before decoding the token
+#         decoded_token = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
+#         print('Decoded token:', decoded_token)  # Log the decoded token for debugging
+        
+#         # If valid, return user details or some other relevant information
+#         return JsonResponse({
+#             "message": "Token is valid",
+#             "user_id": decoded_token.get("user_id"),
+#             "username": decoded_token.get("username"),
+#             "email": decoded_token.get("email"),
+#         }, status=200)
+
+#     except jwt.ExpiredSignatureError:
+#             print('Token has expired.')  # Print that the token is expired
+#             return JsonResponse({"message": "Token has expired"}, status=401)
+        
+#     except jwt.InvalidTokenError:
+#             print('Invalid token.')  # Print that the token is invalid
+#             return JsonResponse({"message": "Invalid token"}, status=401)
+
+
+from django.http import JsonResponse
+from rest_framework.views import APIView
+import jwt
+from datetime import datetime
+
+# Replace this with your actual secret key and algorithm
+JWT_SECRET_KEY = 'eeebdbb90311675c7b8daf730b674f251eeeb35c2727b95d1421624380032db1'
+JWT_ALGORITHM = "HS256"
+
+def protected_api_view(request):
+    """
+    A simple view to verify and decode a JWT token sent in the Authorization header.
+    """
+
+    # Print to confirm the function is accessed
+    print("Entering protected_api_view")
+
+    # Step 1: Get the token from the Authorization header
+    auth_header = request.headers.get('Authorization', None)
+
+    if not auth_header:
+        return JsonResponse({"message": "Authorization header missing"}, status=400)
+
+    # Step 2: Extract the token (Bearer <token>)
+    parts = auth_header.split()
+    if len(parts) != 2 or parts[0].lower() != 'bearer':
+        return JsonResponse({"message": "Invalid Authorization header format"}, status=400)
+
+    token = parts[1]
+    print("Received Token:", token)
+
+    # Step 3: Decode and verify the token
+    try:
+        decoded_token = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+        print("Decoded Token:", decoded_token)
+
+        # Step 4: Check the token's expiration time
+        exp = decoded_token.get('exp', None)
+        if not exp:
+            return JsonResponse({"message": "Token does not have an expiration time"}, status=401)
+
+        # Convert exp to datetime for better readability
+        expiration_time = datetime.utcfromtimestamp(exp)
+        print("Token Expiration Time:", expiration_time)
+
+        if datetime.utcnow() > expiration_time:
+            return JsonResponse({"message": "Token has expired"}, status=401)
+
+        # Step 5: Token is valid, return a success response
+        return JsonResponse({
+            "message": "Token is valid",
+            "user_id": decoded_token.get("user_id"),
+            "username": decoded_token.get("username"),
+            "email": decoded_token.get("email"),
+        }, status=200)
+
+    except jwt.ExpiredSignatureError:
+        return JsonResponse({"message": "Token has expired"}, status=401)
+    except jwt.InvalidTokenError as e:
+        print("Invalid Token Error:", str(e))
+        return JsonResponse({"message": "Invalid token"}, status=401)
+
+
+def generate_jwt(user):
+    payload = {
+        "user_id": user.id,
+        "username": user.username,
+        "email": user.email,
+        "exp": datetime.utcnow() + timedelta(seconds=settings.JWT_EXPIRATION_SECONDS),
+        "iat": datetime.utcnow(),
+    }
+    token = jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+    print( 'tokeen', token)
+    return token
+
+ 
 
 def google_login(request):
     if request.method == "POST":
         try:
             body = json.loads(request.body)
-            token = body.get('token')
+            token = body.get("token")
 
             if not token:
-                return JsonResponse({'message': 'Token not provided'}, status=400)
+                return JsonResponse({"message": "Token not provided"}, status=400)
 
             # Verify the ID token with Google
             try:
                 id_info = id_token.verify_oauth2_token(
-                    token, 
+                    token,
                     google.auth.transport.requests.Request(),
-                    '598064932608-4j38572h65hmj37524inmc1nhcfqiqpm.apps.googleusercontent.com'
+                    "598064932608-4j38572h65hmj37524inmc1nhcfqiqpm.apps.googleusercontent.com",
                 )
             except ValueError as e:
-                return JsonResponse({'message': f'Invalid token: {str(e)}'}, status=400)
-            email = id_info['email']
-            name = id_info.get('name', email)  # Use 'name' if available, otherwise default to email
-            picture_url = id_info.get('picture',"default picture !!")
+                return JsonResponse({"message": f"Invalid token: {str(e)}"}, status=400)
 
-            # ID token is valid, proceed with user authentication
+            email = id_info["email"]
+            name = id_info.get("name", email)  # Use 'name' if available, otherwise default to email
+            picture_url = id_info.get("picture", "https://example.com/default-profile-picture.png")
+
+            # Retrieve or create the user
             user, created = User.objects.get_or_create(
-                email= email, 
-                defaults={'username': 'name'},
-                
+                email=email,
+                defaults={"username": name},
             )
 
             if created:
-                # Perform any additional actions for new users, if needed
-                pass
-            # picture_url = id_info.get('picture')
-            # if not picture_url:
-            #     print("Profile picture not available.")
-            #     # picture_url = "https://example.com/default-profile-picture.png"  # Use a default image
-            # else:
-            #     print(f"Retrieved profile picture: {picture_url}")
-            # Manually specify the backend for the user
+                # Perform any additional actions for new users
+                print(f"New user created: {user.username} ({user.email})")
+
+            # Log the user in
             user.backend = settings.AUTHENTICATION_BACKENDS[0]
-            login(request, user)  # Log the user in
-            print(f"User Name: {name}, User Email: {email}, Picture URL: {picture_url}")
-
-            # user_name = user.username
-            # user_email = user.email
-            # user_picture = id_info.get('picture', 'not found !!')
-            # print(f"User Name: {user_name}, User Email: {user_email}")
-
+            login(request, user)
             
-            return JsonResponse({
-                'message': 'Login successful!',
-                'user': {
-                    'name': name,
-                    'email': email,
-                    'picture': picture_url
+            jwt_token = generate_jwt(user)
+
+            return JsonResponse(
+                {
+                    "message": "Loginn successful!",
+                    "user": {
+                        "name": name,
+                        "email": email,
+                        "picture": picture_url,
+                    },
+                    "token": jwt_token,  # Return JWT token
                 }
-            })
-            
+            )
+
         except json.JSONDecodeError:
-            return JsonResponse({'message': 'Invalid JSON'}, status=400)
+            return JsonResponse({"message": "Invalid JSON"}, status=400)
         except Exception as e:
-            return JsonResponse({'message': f'An unexpected error occurred: {str(e)}'}, status=500)
-    
-    return JsonResponse({'message': 'Invalid request method'}, status=405)
+            return JsonResponse({"message": f"An unexpected error occurred: {str(e)}"}, status=500)
+
+    return JsonResponse({"message": "Invalid request method"}, status=405)

@@ -39,6 +39,7 @@ urlpatterns = [
      path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('accounts/google/login/callback/', views.google_login, name='google_login'),
-
+path('protected-api/', views.protected_api_view, name='protected-api'),
+ 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
