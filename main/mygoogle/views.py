@@ -13,10 +13,10 @@ from django.conf.urls.static import static
 from django.contrib.auth.models import User
 import json
 
-def validate_email(email):
-    email_regex = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
-    if not re.match(email_regex, email):
-        raise ValueError("Invalid email format")
+# def validate_email(email):
+#     email_regex = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+#     if not re.match(email_regex, email):
+#         raise ValueError("Invalid email format")
 
 def button_action(request):
     
@@ -37,10 +37,10 @@ def register_action(request):
                 print(email)
                 if not email or not password or not password2 or not username:
                     return JsonResponse({'message': 'Missing required fields.', 'status': 'fail'}, status=400)
-                try:
-                    validate_email(email)
-                except ValidationError:
-                    return JsonResponse({'message': 'Invalid email format.', 'status': 'fail'}, status=400)
+                # try:
+                #     validate_email(email)
+                # except ValidationError:
+                #     return JsonResponse({'message': 'Invalid email format.', 'status': 'fail'}, status=400)
                 if password != password2:
                     return JsonResponse({'message': 'Passwords do not match.', 'status': 'fail'}, status=400)
                 if User.objects.filter(username=username).exists(): 
@@ -188,35 +188,27 @@ from datetime import datetime
 # Replace this with your actual secret key and algorithm
 JWT_SECRET_KEY = 'eeebdbb90311675c7b8daf730b674f251eeeb35c2727b95d1421624380032db1'
 JWT_ALGORITHM = "HS256"
-
+#  verify and decode
 def protected_api_view(request):
-    """
-    A simple view to verify and decode a JWT token sent in the Authorization header.
-    """
+ 
 
-    # Print to confirm the function is accessed
-    print("Entering protected_api_view")
-
-    # Step 1: Get the token from the Authorization header
     auth_header = request.headers.get('Authorization', None)
 
     if not auth_header:
         return JsonResponse({"message": "Authorization header missing"}, status=400)
 
-    # Step 2: Extract the token (Bearer <token>)
     parts = auth_header.split()
     if len(parts) != 2 or parts[0].lower() != 'bearer':
         return JsonResponse({"message": "Invalid Authorization header format"}, status=400)
 
     token = parts[1]
-    print("Received Token:", token)
+    print("token===", token)
 
-    # Step 3: Decode and verify the token
     try:
         decoded_token = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
-        print("Decoded Token:", decoded_token)
+ 
 
-        # Step 4: Check the token's expiration time
+        #  expire
         exp = decoded_token.get('exp', None)
         if not exp:
             return JsonResponse({"message": "Token does not have an expiration time"}, status=401)
