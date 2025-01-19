@@ -263,7 +263,7 @@ def google_login(request):
                 id_info = id_token.verify_oauth2_token(
                     token,
                     google.auth.transport.requests.Request(),
-                    "598064932608-4j38572h65hmj37524inmc1nhcfqiqpm.apps.googleusercontent.com",
+                    "598064932608-hf8f5bd6aehru3fjegblkhqpge7fnubr.apps.googleusercontent.com",
                 )
             except ValueError as e:
                 return JsonResponse({"message": f"Invalid token: {str(e)}"}, status=400)

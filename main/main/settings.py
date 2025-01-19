@@ -53,8 +53,8 @@ SITE_ID = 1
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': '598064932608-4j38572h65hmj37524inmc1nhcfqiqpm.apps.googleusercontent.com',
-            'secret': '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',
+            'client_id': '598064932608-hf8f5bd6aehru3fjegblkhqpge7fnubr.apps.googleusercontent.com',
+            'secret': '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',
             'key': ''
         },
         'SCOPE': [
@@ -201,8 +201,8 @@ LOGIN_REDIRECT_URL = '/'
 
 LOGOUT_REDIRECT_URL ="/"
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '598064932608-4j38572h65hmj37524inmc1nhcfqiqpm.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '598064932608-hf8f5bd6aehru3fjegblkhqpge7fnubr.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 
 JWT_SECRET_KEY = 'eeebdbb90311675c7b8daf730b674f251eeeb35c2727b95d1421624380032db1'
 
